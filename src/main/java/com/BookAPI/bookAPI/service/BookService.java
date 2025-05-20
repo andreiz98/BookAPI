@@ -1,7 +1,8 @@
 package com.BookAPI.bookAPI.service;
 
+
 import com.BookAPI.bookAPI.model.Book;
-import com.BookAPI.bookAPI.rep.BookRep;
+import com.BookAPI.bookAPI.repository.BookRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,21 +12,42 @@ import java.util.List;
 public class BookService {
 
     @Autowired
-    BookRep rep;
+    BookRep repository;
 
     public List<Book> findAll(){
-        return rep.findAll();
+        return repository.findAll();
     }
 
     public Book findByTitle(String title){
-        return rep.findByTitle(title);
+        return repository.findByTitle(title);
     }
 
     public Book addBook(Book book){
-        return rep.save(book);
+        return repository.save(book);
     }
 
-    public void delete(String title){
-        rep.delete(title);
+    public void deleteBook(String title){
+        repository.delete(title);
     }
+
+    public Book borrowBook(String title){
+        Book book = repository.findByTitle(title);
+
+        if(book != null && !book.isBorrowed()){
+            book.setBorrowed(true);
+            return book;
+        }
+        return null;
+    }
+
+    public Book returnBook(String title){
+        Book book = repository.findByTitle(title);
+
+        if(book != null && book.isBorrowed()){
+            book.setBorrowed(false);
+            return book;
+        }
+        return null;
+    }
+
 }
