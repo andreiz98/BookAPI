@@ -17,14 +17,15 @@ public class BookController {
     BookService service;
 
     @GetMapping
-    public ResponseEntity<List<Book>> getAll() {
+    public ResponseEntity<List<Book>> getAll(){
         return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{title}")
     public ResponseEntity<Book> getBookByTitle(@PathVariable String title) {
         Book book = service.findByTitle(title);
-        if (book == null) {
+
+        if (book == null){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(book);
@@ -36,9 +37,29 @@ public class BookController {
     }
 
     @DeleteMapping("/{title}")
-    public ResponseEntity<Void> deleteBook (@PathVariable String title) {
-        service.delete(title);
+    public ResponseEntity<Void> deleteBook(@PathVariable String title){
+        service.deleteBook(title);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{title}/borrow")
+    public ResponseEntity<Book> borrowBook(@PathVariable String title){
+        Book book = service.borrowBook(title);
+
+        if(book == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(book);
+    }
+
+    @PutMapping("/{title}/return")
+    public ResponseEntity<Book> returnBook(@PathVariable String title){
+        Book book = service.returnBook(title);
+
+        if(book == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(book);
     }
 
 }
